@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EF Trimestre 2 - Deportes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        const COURSE_DATA = {
+            title: "Deportes y Juegos Colectivos",
+            subtitle: "Trimestre 2 - Cooperación y Oposición",
+            description: "En este bloque aprenderemos las tácticas, reglas y valores fundamentales de los deportes de equipo como Baloncesto, Fútbol y Voleibol.",
+            outcomes: ["Aplicar estrategias de ataque y defensa", "Mejorar la técnica individual", "Fomentar el juego limpio y compañerismo"],
+            modules: [
+                { id: 1, title: "Táctica y Estrategia", icon: "📋", content: "La táctica es el plan que ejecutamos para superar al oponente. No basta con correr, hay que pensar espacios y movimientos coordinados." },
+                { id: 2, title: "Fundamentos Técnicos", icon: "🏀", content: "Pase, recepción y desplazamiento. Son las herramientas básicas que todo jugador debe dominar para que el juego fluido sea posible." }
+            ]
+        };
+
+        function App() {
+            const [view, setView] = useState('cover');
+            const [completed, setCompleted] = useState([]);
+
+            const ViewCover = () => (
+                <div className="min-h-screen bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white p-6 text-center">
+                    <div className="bg-white/10 p-10 rounded-3xl backdrop-blur-md border border-white/20 shadow-2xl">
+                        <div className="text-6xl mb-4">⚽</div>
+                        <h2 className="uppercase tracking-widest text-orange-200 mb-2 font-bold">Trimestre 2</h2>
+                        <h1 className="text-5xl font-black mb-6">{COURSE_DATA.title}</h1>
+                        <button onClick={() => setView('index')} className="bg-white text-orange-600 px-10 py-4 rounded-full font-bold text-xl shadow-xl">Entrar al Módulo</button>
+                    </div>
+                </div>
+            );
+
+            const ViewIndex = () => (
+                <div className="min-h-screen bg-slate-50 p-6 max-w-2xl mx-auto">
+                    <h2 className="text-3xl font-black text-slate-800 mb-2">{COURSE_DATA.title}</h2>
+                    <p className="text-slate-500 mb-8">{COURSE_DATA.description}</p>
+                    <div className="space-y-4">
+                        {COURSE_DATA.modules.map(m => (
+                            <div key={m.id} onClick={() => setView('mod'+m.id)} className="bg-white p-6 rounded-2xl shadow-sm border-2 border-slate-100 cursor-pointer hover:border-orange-500 transition-all flex items-center gap-4">
+                                <div className="text-3xl bg-orange-50 p-3 rounded-xl">{m.icon}</div>
+                                <div className="flex-1 font-bold text-lg">{m.title}</div>
+                                <span>{completed.includes(m.id) ? '✅' : '➡️'}</span>
+                            </div>
+                        ))}
+                    </div>
+                    {completed.length === 2 && (
+                        <button onClick={() => setView('end')} className="mt-8 w-full bg-green-500 text-white py-4 rounded-xl font-bold">Finalizar Trimestre 2</button>
+                    )}
+                </div>
+            );
+
+            const ViewModule = ({id}) => {
+                const mod = COURSE_DATA.modules.find(m => m.id === id);
+                return (
+                    <div className="min-h-screen bg-white p-8 max-w-2xl mx-auto">
+                        <div className="text-4xl mb-4">{mod.icon}</div>
+                        <h2 className="text-3xl font-black mb-4">{mod.title}</h2>
+                        <p className="text-xl text-slate-600 leading-relaxed mb-8">{mod.content}</p>
+                        <button onClick={() => { if(!completed.includes(id)) setCompleted([...completed, id]); setView('index'); }} className="w-full bg-orange-500 text-white py-4 rounded-xl font-bold">Completar Tema</button>
+                    </div>
+                );
+            };
+
+            const ViewEnd = () => (
+                <div className="min-h-screen bg-green-500 flex flex-col items-center justify-center text-white text-center p-6">
+                    <div className="text-7xl mb-6">🏆</div>
+                    <h1 className="text-4xl font-black mb-4">¡Trimestre 2 Superado!</h1>
+                    <p className="text-xl mb-8">Has dominado los conceptos de deportes colectivos.</p>
+                    <button onClick={() => location.reload()} className="bg-white text-green-600 px-8 py-3 rounded-xl font-bold">Reiniciar</button>
+                </div>
+            );
+
+            if(view === 'cover') return <ViewCover />;
+            if(view === 'index') return <ViewIndex />;
+            if(view === 'mod1') return <ViewModule id={1} />;
+            if(view === 'mod2') return <ViewModule id={2} />;
+            if(view === 'end') return <ViewEnd />;
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
